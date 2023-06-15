@@ -8,7 +8,6 @@ import torchvision
 from torch.utils.tensorboard import SummaryWriter
 from torchvision.transforms import ToTensor, Compose, Normalize
 from tqdm import tqdm
-from src.utils.loggers import Logger
 
 from model import *
 from utils import setup_seed
@@ -26,11 +25,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_path', type=str, default='vit-t-mae.pt')
 
     args = parser.parse_args()
-    
-    log_name= 'log_pre_training'
-    sys.stdout = Logger(osp.join(args.save_sir, log_name))
-    print(f"==========\nArgs:{args}\n==========")
-
+  
     setup_seed(args.seed)
 
     batch_size = args.batch_size
@@ -82,4 +77,5 @@ if __name__ == '__main__':
             writer.add_image('mae_image', (img + 1) / 2, global_step=e)
         
         ''' save model '''
+        writer.close()
         torch.save(model, args.model_path)
